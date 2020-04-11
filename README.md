@@ -1,4 +1,4 @@
-# ZTE ZXHN h268a presence detection
+# ZTE h268a presence detection
 
 This is a [Device Tracker](https://www.home-assistant.io/components/device_tracker/) for [Home Assistant](https://github.com/home-assistant/home-assistant/). Currently in its early infancy.
 
@@ -40,6 +40,7 @@ And then, inside `configuration.yml`, add something like:
 ```yml
 device_tracker:
   - platform: zte
+    username: !secret zte_username
     password: !secret zte_password
     host: 10.0.0.1
 ```
