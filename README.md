@@ -33,7 +33,7 @@ For example, I would do this:
 cd /home/homeassistant/.homeassistant
 mkdir -p custom_components
 cd custom_components
-git clone https://github.com/TassSinclair/zte-zxhn-h268a-presence-detection zte
+git clone https://github.com/vlasov01/zte-zxhn-h268a-presence-detection zte
 ```
 
 And then, inside `configuration.yml`, add something like:
