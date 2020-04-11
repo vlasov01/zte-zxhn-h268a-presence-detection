@@ -4,8 +4,21 @@ import hashlib
 from collections import namedtuple
 import xml.etree.ElementTree as ET
 
-_LOGGER = logging.getLogger(__name__)
 logging.basicConfig(filename="debug.log",level=logging.DEBUG)
+_LOGGER = logging.getLogger('ZTE Logger')
+_LOGGER.setLevel(logging.DEBUG)
+fh = logging.FileHandler('zte-h268a.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+fh.setFormatter(formatter)
+# add the handlers to logger
+_LOGGER.addHandler(ch)
+_LOGGER.addHandler(fh)
 
 Device = namedtuple("Device", ["host_name", "ip_address", "ipv6_address", "mac_address"])
 get_text = lambda element: element.text
@@ -58,8 +71,13 @@ class ZteClient():
         device_list_url = self.baseUrl + "getpage.lua"
         params = {'pid': '1005', 'InstNum': '5', '_': '1', 'nextpage': 'home_{}_lua.lua'.format(connection_type)}
         response = requests.get(device_list_url, timeout=30, verify=False, cookies=self.cookie_jar, params=params)
+        _LOGGER.debug('Response %s', response.text)
         root = ET.fromstring(response.text)
-        instances = root.find('OBJ_ACCESSDEV_ID').findall('Instance')
+        ret = root.find('OBJ_ACCESSDEV_ID')
+        if not ret:
+                _LOGGER.debug('devices not found %s', root)
+                return None
+        instances = ret.findall('Instance')
         devices = list(map(self.__instance_to_device, instances))
         _LOGGER.debug('found %s %s devices', len(devices), connection_type)
         return devices
